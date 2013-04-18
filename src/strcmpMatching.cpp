@@ -31,4 +31,11 @@ namespace TripRipper
   StrcmpMatching::~StrcmpMatching()
   {
   }
+
+  /**
+   * Match tripcodes using simple calls to strcmp().
+   */
+  void StrcmpMatching::matchTripcodes(const TripcodeContainer *tripcodes, TripcodeContainer *matches)
+  {
+  }
 }

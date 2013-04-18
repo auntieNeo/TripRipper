@@ -28,6 +28,10 @@
 
 namespace TripRipper
 {
+  /**
+   * The StrcmpMatching class implements a tripcode matching algorithm using
+   * simple strcmp calls.
+   */
   class StrcmpMatching : public MatchingAlgorithm
   {
     public:
@@ -38,7 +42,7 @@ namespace TripRipper
       size_t inputStride() const { return 0; }
 
       void setMatchString(const std::string &matchString) { m_matchString = matchString; }
-      void matchTripcodes(TripcodeContainer *tripcodes);
+      void matchTripcodes(const TripcodeContainer *tripcodes, TripcodeContainer *matches);
 
     private:
       std::string m_matchString;

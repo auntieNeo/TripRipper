@@ -28,6 +28,12 @@
 
 namespace TripRipper
 {
+  /**
+   * The GlibcTripcode class implements the tripcode algorithm using the UNIX
+   * crypt(3) from glibc. Since crypt(3) isn't optimized for processing large
+   * datasets, this class is only intended to be used for demonstration
+   * purposes.
+   */
   class GlibcTripcode : public TripcodeAlgorithm
   {
     public:

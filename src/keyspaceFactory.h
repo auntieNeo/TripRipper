@@ -27,28 +27,30 @@
 
 namespace TripRipper
 {
+  class KeyspaceMapping;
   class KeyspacePool;
 
   /**
-   * The KeyspacePoolFactory is responsible for constructing KeyspacePool
-   * objects from a serial representation of the object. This is important for
-   * allowing the root MPI rank to communicate keyspace pools to the
-   * TripcodeCrawler object for each rank. Because there can be many different
-   * types of keyspace mappings, the particular type of KeyspacePool needs to
-   * be communicated in the serial representation. This is an implementation
-   * detail shared by both the KeyspacePoolFactory class and the classes that
-   * implement KeyspacePool.
+   * The KeyspaceFactory is responsible for constructing KeyspacePool and
+   * KeyspaceMapping objects from a serial representation of the object. Thisis
+   * important for allowing the root MPI rank to communicate keyspace pools to
+   * the TripcodeCrawler object for each rank. Because there can be many
+   * different types of keyspace mappings, the particular type of KeyspacePool
+   * needs to be communicated in the serial representation. This is an
+   * implementation detail shared by both the KeyspaceFactory class and the
+   * classes that implement KeyspaceMapping and KeyspacePool.
    */
-  class KeyspacePoolFactory
+  class KeyspaceFactory
   {
     private:
-      KeyspacePoolFactory();
-      ~KeyspacePoolFactory();
+      KeyspaceFactory();
+      ~KeyspaceFactory();
 
     public:
-      static KeyspacePoolFactory *singleton();
+      static KeyspaceFactory *singleton();
 
-      KeyspacePool *createKeyspacePool(const uint8_t *data, size_t size);
+      static KeyspaceMapping *deserializeKeyspaceMapping(const uint8_t *data, size_t size);
+      static KeyspacePool *deserializeKeyspacePool(const uint8_t *data, size_t size);
   };
 }
 

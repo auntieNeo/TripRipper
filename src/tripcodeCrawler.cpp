@@ -29,6 +29,9 @@
 #include "matchingAlgorithm.h"
 #include "tripcodeContainer.h"
 
+#include <iostream>
+using namespace std;
+
 #include <mpi.h>
 
 namespace TripRipper
@@ -47,8 +50,6 @@ namespace TripRipper
     m_matchingAlgorithm->setMatchString(matchString);
 
     m_tripcodeAlgorithm = StrategyFactory::singleton()->createTripcodeAlgorithm(tripcodeStrategy);
-    m_tripcodeAlgorithm->setOutputAlignment(m_matchingAlgorithm->inputAlignment());
-    m_tripcodeAlgorithm->setOutputStride(m_matchingAlgorithm->inputStride());
 
     int worldRank;
     MPI_Comm_rank(MPI_COMM_WORLD, &worldRank);
@@ -99,6 +100,7 @@ namespace TripRipper
 
       while(true)
       {
+        cout << "doing things" << endl;
         MPI_Status status;
 
         // blocking receive for requests for keyspace pools
@@ -142,8 +144,7 @@ namespace TripRipper
         while((currentBlock = keyspacePool->getNextBlock()) != NULL)
         {
           m_tripcodeAlgorithm->computeTripcodes(currentBlock, &tripcodes);
-          m_matchingAlgorithm->matchTripcodes(&tripcodes);
-          matches.merge(&tripcodes);
+          m_matchingAlgorithm->matchTripcodes(&tripcodes, &matches);
         }
 
         // TODO: send TripcodeSearchResult to ROOT_RANK

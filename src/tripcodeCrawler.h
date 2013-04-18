@@ -32,6 +32,13 @@ namespace TripRipper
   class MatchingAlgorithm;
   class KeyspacePool;
 
+  /**
+   * The TripcodeCrawler class is the main workhorse class for computing
+   * tripcodes. Each MPI process instantiates a TripcodeCrawler object. The
+   * TripcodeCrawler fetches KeyspacePool objects from the master process and
+   * searches for tripcodes in that pool until the pool is exhausted, then
+   * requests another pool and repeats.
+   */
   class TripcodeCrawler
   {
     public:

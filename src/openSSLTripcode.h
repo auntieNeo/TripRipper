@@ -27,6 +27,10 @@
 
 namespace TripRipper
 {
+  /**
+   * The OpenSSLTripcode class implements the tripcode algorithm using the
+   * off-the-shelf DES functions that come with OpenSSL.
+   */
   class OpenSSLTripcode : public TripcodeAlgorithm
   {
     public:

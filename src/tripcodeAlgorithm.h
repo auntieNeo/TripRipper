@@ -29,7 +29,6 @@
  * \page tripripper_architecture TripRipper Architecture
  *
  * \section tripcode_searching Tripcode Searching
- * \subsection 
  *
  * \section tripcode_algorithm Tripcode Algorithm
  * There are various different implementations of the tripcode algorithm,
@@ -89,7 +88,8 @@ namespace TripRipper
   class TripcodeContainer;
 
   /**
-   * The abstract TripcodeAlgorithm class describes 
+   * The abstract TripcodeAlgorithm class describes a tripcode algorithm and the
+   * interface needed to use the algorithm.
    */
   class TripcodeAlgorithm
   {
@@ -98,33 +98,31 @@ namespace TripRipper
       virtual ~TripcodeAlgorithm();
 
       /**
-       * The outputAlignment property specifies how the output from a
-       * TripcodeAlgorithm object is to be aligned. Implementing classes must
-       * place the first byte of the output at an address evenly divisable by
-       * the outputAlignment. Additionally, the last byte of the output must be
-       * at an address directly before an address evenly divisable by the
-       * outputAlignment. If the output must be padded to fulfill this last
-       * requirement, implementors can simply duplicate any of the results in
-       * the output, to avoid returning erroneous results.
+       * The inputAlignment() method returns the number of bytes to which
+       * tripcode key input to the algorithm must be aligned. Valid alignments
+       * are multiples of 2, or the value 1 for no alignment. Zero is not a
+       * valid alignment.
+       *
+       * Note that when designing an algorithm, the value returned by
+       * inputStride() and inputPackHighBit() can affect the alignment of input
+       * data. For example, if one would like to have input data 8 byte aligned
+       * as well as have the high bit packed, have inputPackHighBit() return
+       * true and have inputStride() return 1.
        */
-      size_t outputAlignment() const { return m_outputAlignment; }
-      /**
-       * Sets the outputAlignment property. See outputAlignment().
-       */
-      void setOutputAlignment(size_t alignment) { m_outputAlignment = alignment; }
-
-      /**
-       * The outputStride property specifies the number of bytes that occur
-       * between 
-       */
-      size_t outputStride() const { return m_outputStride; }
-      /**
-       * Sets the outputStride property. See outputStride().
-       */
-      void setOutputStride(size_t stride) { m_outputStride = stride; }
-
       virtual size_t inputAlignment() const = 0;
+
+      /**
+       * The inputStride() method returns the number of spacer bytes that the
+       * algorithm expects to occur between tripcode keys.
+       */
       virtual size_t inputStride() const = 0;
+
+
+      /**
+       * The inputPackHighBit() method returns true if the algorithm expects
+       * tripcode keys to be packed into 56 contiguous bits rather than as 64
+       * bits with the high bit on each byte irrelevant to the key.
+       */
       virtual bool inputPackHighBit() const = 0;
 
       virtual void computeTripcodes(const KeyBlock *keys, TripcodeContainer *results) = 0;

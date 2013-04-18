@@ -32,6 +32,10 @@ namespace TripRipper
     delete m_data;
   }
   
+  /**
+   * This method implements using the reentrant crypt(3) function in glibc. This
+   * is not very efficient or practical, only for demonstration purposes.
+   */
   void GlibcTripcode::computeTripcodes(const KeyBlock *keys, TripcodeContainer *results)
   {
     uint8_t tripcode[11];

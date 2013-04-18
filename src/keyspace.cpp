@@ -20,7 +20,7 @@
  * DEALINGS IN THE SOFTWARE.                                                   *
  ******************************************************************************/
 
-#include "keyspaceMapping.h"
+#include "keyspace.h"
 
 namespace TripRipper
 {
@@ -28,12 +28,14 @@ namespace TripRipper
   {
   }
 
+  /**
+   * Destructor for abstract KeyspaceMapping class.
+   */
   KeyspaceMapping::~KeyspaceMapping()
   {
   }
 
-  KeyspacePool::KeyspacePool(uint64_t identifier) :
-    m_identifier(identifier)
+  KeyspacePool::KeyspacePool()
   {
   }
 

@@ -20,8 +20,8 @@
  * DEALINGS IN THE SOFTWARE.                                                   *
  ******************************************************************************/
 
-#include "keyspacePoolFactory.h"
-#include "keyspaceMapping.h"
+#include "keyspaceFactory.h"
+#include "keyspace.h"
 #include "linearKeyspace.h"
 #include "common.h"
 
@@ -29,33 +29,58 @@
 
 namespace TripRipper
 {
-  KeyspacePoolFactory::KeyspacePoolFactory()
+  KeyspaceFactory::KeyspaceFactory()
   {
   }
 
-  KeyspacePoolFactory::~KeyspacePoolFactory()
+  KeyspaceFactory::~KeyspaceFactory()
   {
   }
 
-  KeyspacePoolFactory *KeyspacePoolFactory::singleton()
+  KeyspaceFactory *KeyspaceFactory::singleton()
   {
-    static KeyspacePoolFactory instance;
+    static KeyspaceFactory instance;
     return &instance;
   }
 
-  KeyspacePool *KeyspacePoolFactory::createKeyspacePool(const uint8_t *data, size_t size)
+  /**
+   * The deserializeKeyspaceMapping method calls the appropriate
+   * deserialization method for the given serialized data and returns a pointer
+   * to the deserialized object.
+   *
+   * The caller assumes ownership of the returned object.
+   */
+  static KeyspaceMapping *deserializeKeyspaceMapping(const uint8_t *data, size_t size)
   {
+    assert(size >= sizeof(const uint32_t));
     uint32_t type = ntohl(*reinterpret_cast<const uint32_t*>(data));
-    size_t dataIndex = sizeof(uint32_t);
-    switch(static_cast<KeyspaceMapping::Type>(type))
+    KeyspaceMapping *mapping = NULL;
+    switch(static
+  }
+
+  /**
+   * The deserializeKeyspacePool method calls the appropriate deserialization
+   * method for the given serialized data and returns a pointer to the
+   * deserialized object.
+   *
+   * The caller assumes ownership of the returned object.
+   */
+  KeyspacePool *KeyspaceFactory::deserializeKeyspacePool(const uint8_t *data, size_t size)
+  {
+    assert(size >= sizeof(const uint32_t));
+    uint32_t type = ntohl(*reinterpret_cast<const uint32_t*>(data));
+    KeyspacePool *pool = NULL;
+    switch(static_cast<KeyspacePool::Type>(type))
     {
-      case KeyspaceMapping::LINEAR:
+      case KeyspacePool::LINEAR:
         {
-          LinearKeyspace();
+          pool = new LinearKeyspacePool();
+          pool->deserialize(data, size);
         }
         break;
       default:
-        exit(EXIT_FAILURE);
+        assert(false);
     }
+    return pool;
   }
 }

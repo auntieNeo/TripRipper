@@ -49,8 +49,20 @@ namespace TripRipper
       virtual size_t inputAlignment() const = 0;
       virtual size_t inputStride() const = 0;
 
+      /**
+       * The virtual method setMatchString sets the string criteria to be used
+       * by the implementing algorithm when matching tripcodes. The exact
+       * format of matchString is up to the implementing algorithm.
+       */
       virtual void setMatchString(const std::string &matchString) = 0;
-      virtual void matchTripcodes(TripcodeContainer *tripcodes) = 0;
+
+      /**
+       * The virtual matchTripcodes method must be implemented by derived
+       * classes to find tripcode matches. Implementations must look through all
+       * of the tripcodes contained in the tripcodes container and add any
+       * matches to the provided matches container.
+       */
+      virtual void matchTripcodes(const TripcodeContainer *tripcodes, TripcodeContainer *matches) = 0;
   };
 }
 

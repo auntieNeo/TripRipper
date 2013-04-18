@@ -29,6 +29,9 @@
 #define USAGE(status) do { \
   fprintf(stderr, "Usage: tripripper [mpi_arguments] [options]\n\n"); \
   fprintf(stderr, "   Options\n"); \
+  fprintf(stderr, "     -k, --keyspace-mapping\n"); \
+  fprintf(stderr, "     -t, --tripcode-algorithm\n"); \
+  fprintf(stderr, "     -m, --matching-algorithm\n"); \
   exit(status); \
   } while (0)
 
@@ -96,7 +99,7 @@ int main(int argc, char **argv)
     };
   }
 
-  TripRipper::TripcodeCrawler crawler(keyspaceMapping, tripcodeAlgorithm, matchingAlgorithm);
+  TripRipper::TripcodeCrawler crawler(keyspaceMapping, tripcodeAlgorithm, matchingAlgorithm, "test");
 
   crawler.run();
 
