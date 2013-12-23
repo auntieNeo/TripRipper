@@ -20,39 +20,33 @@
  * DEALINGS IN THE SOFTWARE.                                                   *
  ******************************************************************************/
 
-#ifndef TRIPCODE_CRAWLER_H_
-#define TRIPCODE_CRAWLER_H_
-
-#include <string>
-
 namespace TripRipper
 {
-  class KeyspaceMapping;
-  class TripcodeAlgorithm;
-  class MatchingAlgorithm;
-  class KeyspacePool;
-
-  /**
-   * The TripcodeCrawler class is the main workhorse class for computing
-   * tripcodes. Each MPI process instantiates a TripcodeCrawler object. The
-   * TripcodeCrawler fetches KeyspacePool objects from the master process and
-   * searches for tripcodes in that pool until the pool is exhausted, then
-   * requests another pool and repeats.
-   */
-  class TripcodeCrawler
+  GlibcTripcode::GlibcTripcode()
   {
-    public:
-      TripcodeCrawler(const std::string &keyspaceStrategy, const std::string &tripcodeStrategy, const std::string &matchingStrategy, const std::string &matchString);
-      ~TripcodeCrawler();
+    m_data = new crypt_data;
+  }
 
-      void run();
-      void doSearch();
+  GlibcTripcode::~GlibcTripcode()
+  {
+    delete m_data;
+  }
+  
+  /**
+   * This method implements using the reentrant crypt(3) function in glibc. This
+   * is not very efficient or practical, only for demonstration purposes.
+   */
+  void GlibcTripcode::computeTripcodes(const KeyBlock *keys, TripcodeContainer *results)
+  {
+    uint8_t tripcode[11];
+    uint8_t *keyData = keys->data();
+    char *hash;
 
-    private:
-      KeyspaceMapping *m_keyspaceMapping;
-      TripcodeAlgorithm *m_tripcodeAlgorithm;
-      MatchingAlgorithm *m_matchingAlgorithm;
-  };
+    for(size_t i = 0; i < keys->numKeys(); ++i)
+    {
+      uint8_t *currentTripcode = keyData + i * keys->tripcodeDatumSize();
+      hash = crypt_r(currentTripcode, currentTripcode + 1, m_data);
+      strncpy(static_cast<char*>(tripcode), hash + 3, 10);
+    }
+  }
 }
-
-#endif

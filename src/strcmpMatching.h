@@ -23,15 +23,29 @@
 #ifndef STRCMP_MATCHING_H_
 #define STRCMP_MATCHING_H_
 
+#include "common.h"
 #include "matchingAlgorithm.h"
 
 namespace TripRipper
 {
+  /**
+   * The StrcmpMatching class implements a tripcode matching algorithm using
+   * simple strcmp calls.
+   */
   class StrcmpMatching : public MatchingAlgorithm
   {
     public:
       StrcmpMatching();
       ~StrcmpMatching();
+
+      size_t inputAlignment() const { return 1; }
+      size_t inputStride() const { return 0; }
+
+      void setMatchString(const std::string &matchString) { m_matchString = matchString; }
+      void matchTripcodes(const TripcodeContainer *tripcodes, TripcodeContainer *matches);
+
+    private:
+      std::string m_matchString;
   };
 }
 

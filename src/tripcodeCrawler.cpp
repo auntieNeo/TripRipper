@@ -27,6 +27,10 @@
 #include "keyspaceMapping.h"
 #include "tripcodeAlgorithm.h"
 #include "matchingAlgorithm.h"
+#include "tripcodeContainer.h"
+
+#include <iostream>
+using namespace std;
 
 #include <mpi.h>
 
@@ -37,16 +41,15 @@ namespace TripRipper
    * that identify the strategies to be used when searching for tripcodes. These
    * are the same strings that are used for the command line arguments.
    */
-  TripcodeCrawler::TripcodeCrawler(const std::string &keyspaceStrategy, const std::string &tripcodeStrategy, const std::string &matchingStrategy) :
+  TripcodeCrawler::TripcodeCrawler(const std::string &keyspaceStrategy, const std::string &tripcodeStrategy, const std::string &matchingStrategy, const std::string &matchString) :
     m_keyspaceMapping(NULL),
     m_tripcodeAlgorithm(NULL),
     m_matchingAlgorithm(NULL)
  {
     m_matchingAlgorithm = StrategyFactory::singleton()->createMatchingAlgorithm(matchingStrategy);
+    m_matchingAlgorithm->setMatchString(matchString);
 
     m_tripcodeAlgorithm = StrategyFactory::singleton()->createTripcodeAlgorithm(tripcodeStrategy);
-    m_tripcodeAlgorithm->setOutputAlignment(m_matchingAlgorithm->inputAlignment());
-    m_tripcodeAlgorithm->setOutputStride(m_matchingAlgorithm->inputStride());
 
     int worldRank;
     MPI_Comm_rank(MPI_COMM_WORLD, &worldRank);
@@ -97,6 +100,7 @@ namespace TripRipper
 
       while(true)
       {
+        cout << "doing things" << endl;
         MPI_Status status;
 
         // blocking receive for requests for keyspace pools
@@ -136,12 +140,11 @@ namespace TripRipper
         /// of a custom memory allocater here and a few other places.
 
         TripcodeContainer tripcodes, matches;
-        KeyspaceBlock *currentBlock;
+        KeyBlock *currentBlock;
         while((currentBlock = keyspacePool->getNextBlock()) != NULL)
         {
           m_tripcodeAlgorithm->computeTripcodes(currentBlock, &tripcodes);
-          m_matchingAlgorithm->matchTripcodes(&tripcodes);
-          matches.merge(&tripcodes);
+          m_matchingAlgorithm->matchTripcodes(&tripcodes, &matches);
         }
 
         // TODO: send TripcodeSearchResult to ROOT_RANK

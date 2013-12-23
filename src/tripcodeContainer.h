@@ -20,42 +20,48 @@
  * DEALINGS IN THE SOFTWARE.                                                   *
  ******************************************************************************/
 
-#include "keyspacePoolFactory.h"
-#include "keyspaceMapping.h"
-#include "linearKeyspace.h"
-#include "common.h"
+#ifndef TRIPCODE_CONTAINER_H_
+#define TRIPCODE_CONTAINER_H_
 
-#include <arpa/inet.h>
+#include "common.h"
 
 namespace TripRipper
 {
-  KeyspacePoolFactory::KeyspacePoolFactory()
+  /**
+   * TripcodeContainer stores tripcodes along with their corresponding
+   * passwords.
+   *
+   * TripcodeContainer objects are serializable for transmission from
+   * TripcodeCrawler workers to the root process.
+   *
+   * TripcodeContainer objects can be merged together to form a single
+   * container of results with merge().
+   *
+   * TripcodeContainer provides a verify() method for verifying the tripcodes
+   * with a known-working tripcode algorithm.
+   */
+  class TripcodeContainer
   {
-  }
+    public:
+      TripcodeContainer();
+      ~TripcodeContainer();
 
-  KeyspacePoolFactory::~KeyspacePoolFactory()
-  {
-  }
+      void serialize(unsigned char *buffer, size_t size, bool &done);
+      void deserialize(const unsigned char *buffer, size_t size, bool &done);
 
-  KeyspacePoolFactory *KeyspacePoolFactory::singleton()
-  {
-    static KeyspacePoolFactory instance;
-    return &instance;
-  }
+      void merge(const TripcodeContainer *source);
 
-  KeyspacePool *KeyspacePoolFactory::createKeyspacePool(const uint8_t *data, size_t size)
+      bool verify();
+
+      void insert(const std::pair<std::string, std::string> &tripcode);
+
+    private:
+      std::vector<std::pair<std::string, std::string> > m_tripcodes;
+  };
+
+  class TripcodeBlock
   {
-    uint32_t type = ntohl(*reinterpret_cast<const uint32_t*>(data));
-    size_t dataIndex = sizeof(uint32_t);
-    switch(static_cast<KeyspaceMapping::Type>(type))
-    {
-      case KeyspaceMapping::LINEAR:
-        {
-          LinearKeyspace();
-        }
-        break;
-      default:
-        exit(EXIT_FAILURE);
-    }
-  }
+  };
 }
+
+#endif

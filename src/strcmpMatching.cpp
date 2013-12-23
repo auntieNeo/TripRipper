@@ -20,24 +20,22 @@
  * DEALINGS IN THE SOFTWARE.                                                   *
  ******************************************************************************/
 
-#include "keyspaceMapping.h"
+#include "strcmpMatching.h"
 
 namespace TripRipper
 {
-  KeyspaceMapping::KeyspaceMapping()
+  StrcmpMatching::StrcmpMatching()
   {
   }
 
-  KeyspaceMapping::~KeyspaceMapping()
+  StrcmpMatching::~StrcmpMatching()
   {
   }
 
-  KeyspacePool::KeyspacePool(uint64_t identifier) :
-    m_identifier(identifier)
-  {
-  }
-
-  KeyspacePool::~KeyspacePool()
+  /**
+   * Match tripcodes using simple calls to strcmp().
+   */
+  void StrcmpMatching::matchTripcodes(const TripcodeContainer *tripcodes, TripcodeContainer *matches)
   {
   }
 }

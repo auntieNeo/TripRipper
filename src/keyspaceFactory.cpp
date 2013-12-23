@@ -20,39 +20,67 @@
  * DEALINGS IN THE SOFTWARE.                                                   *
  ******************************************************************************/
 
-#ifndef TRIPCODE_CRAWLER_H_
-#define TRIPCODE_CRAWLER_H_
+#include "keyspaceFactory.h"
+#include "keyspace.h"
+#include "linearKeyspace.h"
+#include "common.h"
 
-#include <string>
+#include <arpa/inet.h>
 
 namespace TripRipper
 {
-  class KeyspaceMapping;
-  class TripcodeAlgorithm;
-  class MatchingAlgorithm;
-  class KeyspacePool;
+  KeyspaceFactory::KeyspaceFactory()
+  {
+  }
+
+  KeyspaceFactory::~KeyspaceFactory()
+  {
+  }
+
+  KeyspaceFactory *KeyspaceFactory::singleton()
+  {
+    static KeyspaceFactory instance;
+    return &instance;
+  }
 
   /**
-   * The TripcodeCrawler class is the main workhorse class for computing
-   * tripcodes. Each MPI process instantiates a TripcodeCrawler object. The
-   * TripcodeCrawler fetches KeyspacePool objects from the master process and
-   * searches for tripcodes in that pool until the pool is exhausted, then
-   * requests another pool and repeats.
+   * The deserializeKeyspaceMapping method calls the appropriate
+   * deserialization method for the given serialized data and returns a pointer
+   * to the deserialized object.
+   *
+   * The caller assumes ownership of the returned object.
    */
-  class TripcodeCrawler
+  static KeyspaceMapping *deserializeKeyspaceMapping(const uint8_t *data, size_t size)
   {
-    public:
-      TripcodeCrawler(const std::string &keyspaceStrategy, const std::string &tripcodeStrategy, const std::string &matchingStrategy, const std::string &matchString);
-      ~TripcodeCrawler();
+    assert(size >= sizeof(const uint32_t));
+    uint32_t type = ntohl(*reinterpret_cast<const uint32_t*>(data));
+    KeyspaceMapping *mapping = NULL;
+    switch(static
+  }
 
-      void run();
-      void doSearch();
-
-    private:
-      KeyspaceMapping *m_keyspaceMapping;
-      TripcodeAlgorithm *m_tripcodeAlgorithm;
-      MatchingAlgorithm *m_matchingAlgorithm;
-  };
+  /**
+   * The deserializeKeyspacePool method calls the appropriate deserialization
+   * method for the given serialized data and returns a pointer to the
+   * deserialized object.
+   *
+   * The caller assumes ownership of the returned object.
+   */
+  KeyspacePool *KeyspaceFactory::deserializeKeyspacePool(const uint8_t *data, size_t size)
+  {
+    assert(size >= sizeof(const uint32_t));
+    uint32_t type = ntohl(*reinterpret_cast<const uint32_t*>(data));
+    KeyspacePool *pool = NULL;
+    switch(static_cast<KeyspacePool::Type>(type))
+    {
+      case KeyspacePool::LINEAR:
+        {
+          pool = new LinearKeyspacePool();
+          pool->deserialize(data, size);
+        }
+        break;
+      default:
+        assert(false);
+    }
+    return pool;
+  }
 }
-
-#endif

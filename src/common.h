@@ -27,6 +27,8 @@
 #include <cstdlib>
 #include <stdint.h>
 #include <cassert>
+#include <string>
+#include <vector>
 
 namespace TripRipper
 {
@@ -41,7 +43,7 @@ namespace TripRipper
 
   // ALL memory is aligned to MEMORY_ALIGNMENT many bits, to simplify
   // algorithms that use SIMD instructions.
-  const int MEMORY_ALIGNMENT = 32;
+  const int MEMORY_ALIGNMENT = 6;
 }
 
 #endif

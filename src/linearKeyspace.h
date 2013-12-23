@@ -23,10 +23,20 @@
 #ifndef LINEAR_KEYSPACE_H_
 #define LINEAR_KEYSPACE_H_
 
-#include "keyspaceMapping.h"
+#include "keyspace.h"
 
 namespace TripRipper
 {
+  /**
+   * The LinearKeyspace class describes a mapping onto the tripcode keyspace in
+   * which each key is mapped in sequential order, one after the other.
+   *
+   * This is the simplest mapping possible. The primary disadvantage of this
+   * mapping is that it can be easier for someone to guess your key if it
+   * appears early in the keyspace and they know that you used this mapping.
+   * Since DES has such a small keyspace to begin with, this might not matter to
+   * you.
+   */
   class LinearKeyspace : public KeyspaceMapping
   {
     public:
@@ -42,11 +52,21 @@ namespace TripRipper
       void deserialize(const unsigned char *buffer, size_t size, bool &done);
   };
 
+  /**
+   * The LinearKeyspacePool implements a KeyspacePool for LinearKeyspace. Keys
+   * in this pool are from a single, contiguous portion of the keyspace.
+   */
   class LinearKeyspacePool : public KeyspacePool
   {
     public:
       LinearKeyspacePool(uint64_t identifier);
       ~LinearKeyspacePool();
+
+      uint64_t identifier()
+
+      size_t blockSize() { return ; }
+      size_t blockAlignment() { return ; }
+      void setBlockAlignment(size_t alignment);
   };
 }
 

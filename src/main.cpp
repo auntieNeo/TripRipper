@@ -27,8 +27,15 @@
 #include "tripcodeCrawler.h"
 
 #define USAGE(status) do { \
-  fprintf(stderr, "Usage: tripripper [mpi_arguments] [options]\n\n"); \
+  fprintf(stderr, "Usage: tripripper [mpi_arguments] [options] search_string\n\n"); \
   fprintf(stderr, "   Options\n"); \
+  fprintf(stderr, "   -k --keyspace-mapping=[mapping]\n"); \
+  fprintf(stderr, "      The keyspace mapping determines which keys in the keyspace will be\n"); \
+  fprintf(stderr, "      searched, and in what order.\n"); \
+  fprintf(stderr, "   -t --tripcode-algorithm=[algorithm]\n"); \
+  fprintf(stderr, "      The algorithm that computes the tripcodes. There are a variety of tripcode\n"); \
+  fprintf(stderr, "      algorithms available, depending on the hardware, each with different\n"); \
+  fprintf(stderr, "      performance characteristics.\n"); \
   exit(status); \
   } while (0)
 
@@ -42,7 +49,7 @@ int main(int argc, char **argv)
   MPI_Init(&argc, &argv);
   atexit(tripRipperExit);
 
-  std::string keyspaceMapping, tripcodeAlgorithm, matchingAlgorithm;
+  std::string keyspaceMapping, tripcodeAlgorithm, matchingAlgorithm, searchString;
 
   // parse options with getopts
   while(1)
@@ -51,6 +58,7 @@ int main(int argc, char **argv)
       {"keyspace-mapping", required_argument, NULL, 'k'},
       {"tripcode-algorithm", required_argument, NULL, 't'},
       {"matching-algorithm", required_argument, NULL, 'm'},
+      {"search-string", required_argument, NULL, 's'},
       {"help", no_argument, NULL, 'h'}
     };
 
@@ -95,8 +103,14 @@ int main(int argc, char **argv)
         break;
     };
   }
+  // get the search string
+  if(optind >= argc)
+  {
+    USAGE(EXIT_FAILURE);
+  }
+  searchString = std::string(argv[optind]);
 
-  TripRipper::TripcodeCrawler crawler(keyspaceMapping, tripcodeAlgorithm, matchingAlgorithm);
+  TripRipper::TripcodeCrawler crawler(keyspaceMapping, tripcodeAlgorithm, matchingAlgorithm, searchString);
 
   crawler.run();
 

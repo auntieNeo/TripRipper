@@ -20,39 +20,15 @@
  * DEALINGS IN THE SOFTWARE.                                                   *
  ******************************************************************************/
 
-#ifndef TRIPCODE_CRAWLER_H_
-#define TRIPCODE_CRAWLER_H_
-
-#include <string>
+#include "tripcodeContainer.h"
 
 namespace TripRipper
 {
-  class KeyspaceMapping;
-  class TripcodeAlgorithm;
-  class MatchingAlgorithm;
-  class KeyspacePool;
-
-  /**
-   * The TripcodeCrawler class is the main workhorse class for computing
-   * tripcodes. Each MPI process instantiates a TripcodeCrawler object. The
-   * TripcodeCrawler fetches KeyspacePool objects from the master process and
-   * searches for tripcodes in that pool until the pool is exhausted, then
-   * requests another pool and repeats.
-   */
-  class TripcodeCrawler
+  TripcodeContainer::TripcodeContainer()
   {
-    public:
-      TripcodeCrawler(const std::string &keyspaceStrategy, const std::string &tripcodeStrategy, const std::string &matchingStrategy, const std::string &matchString);
-      ~TripcodeCrawler();
+  }
 
-      void run();
-      void doSearch();
-
-    private:
-      KeyspaceMapping *m_keyspaceMapping;
-      TripcodeAlgorithm *m_tripcodeAlgorithm;
-      MatchingAlgorithm *m_matchingAlgorithm;
-  };
+  TripcodeContainer::~TripcodeContainer()
+  {
+  }
 }
-
-#endif

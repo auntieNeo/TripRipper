@@ -27,12 +27,23 @@
 
 namespace TripRipper
 {
+  /**
+   * The OpenSSLTripcode class implements the tripcode algorithm using the
+   * off-the-shelf DES functions that come with OpenSSL.
+   */
   class OpenSSLTripcode : public TripcodeAlgorithm
   {
     public:
       OpenSSLTripcode();
       ~OpenSSLTripcode();
 
+<<<<<<< HEAD
+=======
+      size_t inputAlignment() const { return 1; }
+      size_t inputStride() const { return 1; }
+      bool inputPackHighBit() const { return false; }
+
+>>>>>>> e5d84716872796480dee88415710fe9b15bf7cee
       void computeTripcodes(const KeyBlock *keys, TripcodeContainer *results);
   };
 }

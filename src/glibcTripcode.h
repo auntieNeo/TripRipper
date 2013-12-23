@@ -20,38 +20,34 @@
  * DEALINGS IN THE SOFTWARE.                                                   *
  ******************************************************************************/
 
-#ifndef TRIPCODE_CRAWLER_H_
-#define TRIPCODE_CRAWLER_H_
+#ifndef GLIBC_TRIPCODE_H_
+#define GLIBC_TRIPCODE_H_
 
-#include <string>
+#include "common.h"
+#include <crypt.h>
 
 namespace TripRipper
 {
-  class KeyspaceMapping;
-  class TripcodeAlgorithm;
-  class MatchingAlgorithm;
-  class KeyspacePool;
-
   /**
-   * The TripcodeCrawler class is the main workhorse class for computing
-   * tripcodes. Each MPI process instantiates a TripcodeCrawler object. The
-   * TripcodeCrawler fetches KeyspacePool objects from the master process and
-   * searches for tripcodes in that pool until the pool is exhausted, then
-   * requests another pool and repeats.
+   * The GlibcTripcode class implements the tripcode algorithm using the UNIX
+   * crypt(3) from glibc. Since crypt(3) isn't optimized for processing large
+   * datasets, this class is only intended to be used for demonstration
+   * purposes.
    */
-  class TripcodeCrawler
+  class GlibcTripcode : public TripcodeAlgorithm
   {
     public:
-      TripcodeCrawler(const std::string &keyspaceStrategy, const std::string &tripcodeStrategy, const std::string &matchingStrategy, const std::string &matchString);
-      ~TripcodeCrawler();
+      GlibcTripcode();
+      virtual ~GlibcTripcode();
 
-      void run();
-      void doSearch();
+      size_t inputAlignment() const { return 1; }
+      size_t inputStride() const { return 0; }
+      bool inputPackHighBit() const { return false; }
+
+      void computeTripcodes(const KeyBlock *keys, TripcodeContainer *results);
 
     private:
-      KeyspaceMapping *m_keyspaceMapping;
-      TripcodeAlgorithm *m_tripcodeAlgorithm;
-      MatchingAlgorithm *m_matchingAlgorithm;
+      crypt_data *m_data;
   };
 }
 

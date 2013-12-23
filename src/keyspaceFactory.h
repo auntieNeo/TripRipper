@@ -20,38 +20,37 @@
  * DEALINGS IN THE SOFTWARE.                                                   *
  ******************************************************************************/
 
-#ifndef TRIPCODE_CRAWLER_H_
-#define TRIPCODE_CRAWLER_H_
+#ifndef KEYSPACE_POOL_FACTORY_H_
+#define KEYSPACE_POOL_FACTORY_H_
 
-#include <string>
+#include "common.h"
 
 namespace TripRipper
 {
   class KeyspaceMapping;
-  class TripcodeAlgorithm;
-  class MatchingAlgorithm;
   class KeyspacePool;
 
   /**
-   * The TripcodeCrawler class is the main workhorse class for computing
-   * tripcodes. Each MPI process instantiates a TripcodeCrawler object. The
-   * TripcodeCrawler fetches KeyspacePool objects from the master process and
-   * searches for tripcodes in that pool until the pool is exhausted, then
-   * requests another pool and repeats.
+   * The KeyspaceFactory is responsible for constructing KeyspacePool and
+   * KeyspaceMapping objects from a serial representation of the object. Thisis
+   * important for allowing the root MPI rank to communicate keyspace pools to
+   * the TripcodeCrawler object for each rank. Because there can be many
+   * different types of keyspace mappings, the particular type of KeyspacePool
+   * needs to be communicated in the serial representation. This is an
+   * implementation detail shared by both the KeyspaceFactory class and the
+   * classes that implement KeyspaceMapping and KeyspacePool.
    */
-  class TripcodeCrawler
+  class KeyspaceFactory
   {
-    public:
-      TripcodeCrawler(const std::string &keyspaceStrategy, const std::string &tripcodeStrategy, const std::string &matchingStrategy, const std::string &matchString);
-      ~TripcodeCrawler();
-
-      void run();
-      void doSearch();
-
     private:
-      KeyspaceMapping *m_keyspaceMapping;
-      TripcodeAlgorithm *m_tripcodeAlgorithm;
-      MatchingAlgorithm *m_matchingAlgorithm;
+      KeyspaceFactory();
+      ~KeyspaceFactory();
+
+    public:
+      static KeyspaceFactory *singleton();
+
+      static KeyspaceMapping *deserializeKeyspaceMapping(const uint8_t *data, size_t size);
+      static KeyspacePool *deserializeKeyspacePool(const uint8_t *data, size_t size);
   };
 }
 
