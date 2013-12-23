@@ -38,6 +38,8 @@ namespace TripRipper
   };
 
   const int ROOT_RANK = 0;
+
+  const int ADDRESS_ALIGNMENT = 6;
 }
 
 #endif
