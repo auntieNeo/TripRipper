@@ -63,7 +63,7 @@
  *
  * \subsection tripcode_performance Performance Considerations
  * The glib implementation of crypt(3) is very slow, but much faster
- * implementations of the algorithm can be used. OpenSSL has an optimal
+ * implementations of the algorithm can be used. OpenSSL has an optimized
  * implementation, and John the Ripper has several SIMD implementations for
  * different architectures. There are Intel AVX implementations floating around
  * as well. GPU processing is probably the most efficient method for consumer
@@ -96,40 +96,40 @@ namespace TripRipper
       TripcodeAlgorithm();
       virtual ~TripcodeAlgorithm();
 
-      /**
-       * The outputAlignment property specifies how the output from a
-       * TripcodeAlgorithm object is to be aligned. Implementing classes must
-       * place the first byte of the output at an address evenly divisable by
-       * the outputAlignment. Additionally, the last byte of the output must be
-       * at an address directly before an address evenly divisable by the
-       * outputAlignment. If the output must be padded to fulfill this last
-       * requirement, implementors can simply duplicate any of the results in
-       * the output, to avoid returning erroneous results.
-       */
-      size_t outputAlignment() const { return m_outputAlignment; }
-      /**
-       * Sets the outputAlignment property. See outputAlignment().
-       */
-      void setOutputAlignment(size_t alignment) { m_outputAlignment = alignment; }
-
-      /**
-       * The outputStride property specifies the number of bytes that occur
-       * between 
-       */
-      size_t outputStride() const { return m_outputStride; }
-      /**
-       * Sets the outputStride property. See outputStride().
-       */
-      void setOutputStride(size_t stride) { m_outputStride = stride; }
-
-      virtual size_t inputAlignment() const = 0;
-      virtual size_t inputStride() const = 0;
-      virtual bool inputPackHighBit() const = 0;
+//      /**
+//       * The outputAlignment property specifies how the output from a
+//       * TripcodeAlgorithm object is to be aligned. Implementing classes must
+//       * place the first byte of the output at an address evenly divisable by
+//       * the outputAlignment. Additionally, the last byte of the output must be
+//       * at an address directly before an address evenly divisable by the
+//       * outputAlignment. If the output must be padded to fulfill this last
+//       * requirement, implementors can simply duplicate any of the results in
+//       * the output, to avoid returning erroneous results.
+//       */
+//      size_t outputAlignment() const { return m_outputAlignment; }
+//      /**
+//       * Sets the outputAlignment property. See outputAlignment().
+//       */
+//      void setOutputAlignment(size_t alignment) { m_outputAlignment = alignment; }
+//
+//      /**
+//       * The outputStride property specifies the number of bytes that occur
+//       * between 
+//       */
+//      size_t outputStride() const { return m_outputStride; }
+//      /**
+//       * Sets the outputStride property. See outputStride().
+//       */
+//      void setOutputStride(size_t stride) { m_outputStride = stride; }
+//
+//      virtual size_t inputAlignment() const = 0;
+//      virtual size_t inputStride() const = 0;
+//      virtual bool inputPackHighBit() const = 0;
 
       virtual void computeTripcodes(const KeyBlock *keys, TripcodeContainer *results) = 0;
 
     private:
-      size_t m_outputAlignment, m_outputStride;
+//      size_t m_outputAlignment, m_outputStride;
   };
 }
 

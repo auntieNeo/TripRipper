@@ -37,7 +37,7 @@ namespace TripRipper
    *
    * Another benefit provided by this architecture is that KeyspaceMapping
    * objects can be serialized and stored so that searches can be suspended and
-   * subsequently resumed at a later time.
+   * subsequently resumed.
    */
   class KeyspaceMapping
   {
@@ -94,6 +94,9 @@ namespace TripRipper
     public:
       KeyBlock();
       virtual ~KeyBlock();
+
+      virtual size_t size();
+      virtual uint8_t *block();
   };
 }
 

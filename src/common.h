@@ -38,6 +38,10 @@ namespace TripRipper
   };
 
   const int ROOT_RANK = 0;
+
+  // ALL memory is aligned to MEMORY_ALIGNMENT many bits, to simplify
+  // algorithms that use SIMD instructions.
+  const int MEMORY_ALIGNMENT = 32;
 }
 
 #endif

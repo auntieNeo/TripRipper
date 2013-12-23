@@ -33,8 +33,7 @@ namespace TripRipper
       OpenSSLTripcode();
       ~OpenSSLTripcode();
 
-      size_t inputAlignment() const { return 1; }
-      size_t inputStride() const { return 1; }
+      void computeTripcodes(const KeyBlock *keys, TripcodeContainer *results);
   };
 }
 
